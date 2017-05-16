@@ -1,0 +1,101 @@
+﻿@model CodeIt.Models.CodeDetails
+    @using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Details";
+    
+}
+
+
+
+<div class="space20"></div>
+
+<h1>@Model.CodeTitle</h1>
+
+<div class="space20"></div>
+
+<h2>@Model.Author</h2> 
+
+<h4>Code creation date: @Model.TimeCreated</h4>
+
+
+<div class="space20"></div>
+
+
+<div id="selectable" class="ui-selectable space10">
+    <ol class="text well">
+       @foreach (var line in Model.CodeContent)
+       {
+            <li class="li1" > <div class="de1" ><pre>@(line)</pre></div></li>
+       }
+
+    </ol>
+</div>
+<p class="text-right">
+    @{
+        if (Model.MyUser != null)
+        {
+            <a href="/Code/All?page=@Model.PrevPage&user=@Model.MyUser" class="btn btn-info"><< Back</a>
+        }
+        else 
+        {
+            <a href="/Code/All?page=@Model.PrevPage" class="btn btn-info"><< Back</a>
+        }
+        
+    }
+
+    
+    <a href="/Code/All?user=@Model.ContactInfo" class="btn btn-primary">See More Codes From this User</a>
+    <a href="/Comment/Create/@Model.Id" class="btn btn-success">Comment</a>
+</p>
+<div class="text-left">
+    @{
+        if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || Model.isAuthor(User.Identity.GetUserId())))
+        {
+            <a href="/Code/Edit/@Model.Id" class="btn btn-success">Edit</a>
+            <a href="/Code/Delete/@Model.Id" class="btn btn-danger">Delete X</a>
+        }
+    }
+</div>
+
+<hr class="lyne"/>
+@{
+    if (Model.Coments.Count != 0)
+    {
+        <div class="space20"></div>
+        <div class="space20"></div>
+        <h2>Comments</h2>
+
+        <div class="space20"></div>
+        <div class="space20"></div>
+        <div class="space20"></div>
+        <div class="space20"></div>
+
+        
+            foreach (var c in Model.Coments)
+            {
+                <div class="space10 comDiv">
+                    <p class="lead" style="margin-bottom:0px; margin-left:10px">@c.Author.Nickname</p>
+                    <p style="margin-left:10px">Date: @c.TimeCreated</p>
+
+                    <pre class="comment style-2">@c.Content</pre>
+
+                    <p class="text-right" style="margin:2px; margin-right:10px">
+                        @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || c.IsAuthor(User.Identity.GetUserId())))
+                        {
+                            <a href="/Comment/Delete/@c.Id" class="btn btn-danger">Delete X</a>
+                            <a href="/Comment/Edit/@c.Id" class="btn btn-success">Edit</a>
+                        }
+                        
+                    </p>
+                </div>
+            }
+        if (Model.Coments.Count > 8)
+        {
+            <p class="text-right">
+                <a href="/Comment/Create/@Model.Id" class="btn btn-success">Comment</a>
+            </p>
+        }
+
+    }
+}
+

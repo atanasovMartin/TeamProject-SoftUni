@@ -1,1 +1,1 @@
-# TeamProject-SoftUni
+# SoftUniProject
